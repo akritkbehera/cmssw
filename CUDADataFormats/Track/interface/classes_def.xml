@@ -1,0 +1,10 @@
+<lcgdict>
+  <class name="TrackSoAHeterogeneousHost<pixelTopology::Phase2>" persistent="false"/>
+  <class name="edm::Wrapper<TrackSoAHeterogeneousHost<pixelTopology::Phase2>>" persistent="false"/>
+
+  <class name="TrackingRecHitSoAHost<pixelTopology::Phase2>" persistent="false"/>
+  <class name="edm::Wrapper<TrackingRecHitSoAHost<pixelTopology::Phase2>>" persistent="false"/>
+
+  <class name="ZVertexSoAHeterogeneousHost<131072>" persistent="false"/>
+  <class name="edm::Wrapper<ZVertexSoAHeterogeneousHost<131072>>" persistent="false"/>
+</lcgdict>
