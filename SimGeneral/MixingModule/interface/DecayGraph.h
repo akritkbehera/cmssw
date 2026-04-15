@@ -4,6 +4,10 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "SimDataFormats/Track/interface/SimTrack.h"
 
+#ifndef DEBUG
+#define DEBUG false
+#endif
+
 #if DEBUG
 // boost optional (used by boost graph) results in some false positives with
 // // -Wmaybe-uninitialized
