@@ -108,6 +108,16 @@ namespace edm::rntuple_temp {
   }
 
   namespace {
+    // Keep compatibility with ROOT versions predating the active-cluster API.
+    template <typename Descriptor>
+    auto activeClusters(Descriptor const &desc) {
+      if constexpr (requires { desc.GetActiveClusterIterable(); }) {
+        return desc.GetActiveClusterIterable();
+      } else {
+        return desc.GetClusterIterable();
+      }
+    }
+
     Long64_t storageForField(ROOT::RFieldDescriptor const &iField, ROOT::RNTupleDescriptor const &iDesc) {
       Long64_t storage = 0;
       for (auto &col : iDesc.GetColumnIterable(iField)) {
@@ -116,7 +126,7 @@ namespace edm::rntuple_temp {
         }
         auto id = col.GetPhysicalId();
 
-        for (auto &cluster : iDesc.GetActiveClusterIterable()) {
+        for (auto &cluster : activeClusters(iDesc)) {
           auto columnRange = cluster.GetColumnRange(id);
           if (columnRange.IsSuppressed()) {
             continue;
