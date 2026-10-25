@@ -17,6 +17,7 @@
 #include <TApplication.h>
 #include <TEveWindow.h>
 #include <TGClient.h>
+#include <TGWindow.h>
 #include <TGLayout.h>
 #include <TGButton.h>
 #include <TGMenu.h>
@@ -51,6 +52,19 @@
 #include "Fireworks/Core/interface/CmsShowCommon.h"
 
 #include <fstream>
+
+namespace {
+  // ROOT moved pixmap extraction from TImage to TGWindow.
+  template <typename Window = TGWindow, typename Image>
+  auto imagePixmap(Image *image) {
+    if constexpr (requires { Window::GetImagePixmap(image); }) {
+      return Window::GetImagePixmap(image);
+    } else {
+      return image->GetPixmap();
+    }
+  }
+}  // namespace
+
 
 //
 // constants, enums and typedefs
@@ -277,7 +291,7 @@ CmsShowMainFrame::CmsShowMainFrame(const TGWindow *p, UInt_t w, UInt_t h, FWGUIM
 
   TGCompositeFrame *buttonFrame = new TGHorizontalFrame(controlFrame, 10, 10, 0, backgroundColor);
   TImage *imgBtn = TImage::Open(FWCheckBoxIcon::coreIcondir() + "slider-bg-up.png");
-  buttonFrame->SetBackgroundPixmap(imgBtn->GetImagePixmap());
+  buttonFrame->SetBackgroundPixmap(imagePixmap(imgBtn));
 
   goToFirst->createCustomIconsButton(
       buttonFrame,
@@ -330,7 +344,7 @@ CmsShowMainFrame::CmsShowMainFrame(const TGWindow *p, UInt_t w, UInt_t h, FWGUIM
 
   TGHorizontalFrame *sliderFrame = new TGHorizontalFrame(controlFrame, 10, 10, 0, backgroundColor);
   TImage *imgSld = TImage::Open(FWCheckBoxIcon::coreIcondir() + "slider-bg-down.png");
-  sliderFrame->SetBackgroundPixmap(imgSld->GetImagePixmap());
+  sliderFrame->SetBackgroundPixmap(imagePixmap(imgSld));
   TString sldBtn = FWCheckBoxIcon::coreIcondir() + "slider-button.png";
 
   m_delaySlider = new TGHSlider(sliderFrame, 109, kSlider1 | kScaleNo);
@@ -465,7 +479,7 @@ CmsShowMainFrame::CmsShowMainFrame(const TGWindow *p, UInt_t w, UInt_t h, FWGUIM
 
     TGVerticalFrame *logoFrame = new TGVerticalFrame(parentLogoFrame, 53, 53, kFixedSize);
     TImage *logoImg = TImage::Open(FWCheckBoxIcon::coreIcondir() + "CMSRedOnBlackThick.png");
-    logoFrame->SetBackgroundPixmap(logoImg->GetImagePixmap());
+    logoFrame->SetBackgroundPixmap(imagePixmap(logoImg));
     parentLogoFrame->AddFrame(logoFrame, new TGLayoutHints(kLHintsRight | kLHintsCenterY, 0, 14, 0, 0));
   }
   {
@@ -479,7 +493,7 @@ CmsShowMainFrame::CmsShowMainFrame(const TGWindow *p, UInt_t w, UInt_t h, FWGUIM
     logoFrame->AddFrame(infoBut);
     infoBut->Connect("Clicked()", "CmsShowMainFrame", this, "showFWorksInfo()");
     //TImage *logoImg  = TImage::Open( FWCheckBoxIcon::coreIcondir() + "fireworksSmallGray.png");
-    //logoFrame->SetBackgroundPixmap(logoImg->GetImagePixmap());
+    //logoFrame->SetBackgroundPixmap(imagePixmap(logoImg));
     menuTopFrame->AddFrame(logoFrame, new TGLayoutHints(kLHintsRight | kLHintsBottom, 0, 13, 3, 1));
   }
 
@@ -746,7 +760,7 @@ void CmsShowMainFrame::showFWorksInfo() {
 
     TGFrame *logoFrame = new TGFrame(m_fworksAbout, 140, 48, kFixedSize);
     TImage *logoImg = TImage::Open(FWCheckBoxIcon::coreIcondir() + "logo-fireworks.png");
-    logoFrame->SetBackgroundPixmap(logoImg->GetPixmap());
+    logoFrame->SetBackgroundPixmap(imagePixmap(logoImg));
     m_fworksAbout->AddFrame(logoFrame, new TGLayoutHints(kLHintsTop | kLHintsCenterX, 0, 0, 16, 0));
 
     TGLabel *label = new TGLabel(m_fworksAbout, infoText);
